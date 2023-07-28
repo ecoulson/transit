@@ -1,3 +1,7 @@
+use backend::proto::renderables::Renderable;
+
 fn main() {
-    println!("Hello, world!");
+    let mut renderable = Renderable::default();
+    renderable.test = String::from("test");
+    println!("renderable name {}", renderable.test);
 }

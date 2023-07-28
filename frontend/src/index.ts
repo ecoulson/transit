@@ -44,13 +44,31 @@ function main() {
     requestAnimationFrame(() => loop(new ConsoleLogger(), SimulationTime.new(Clock.nowSeconds()), renderer));
 }
 
+class RenderQueue {
+    static new() {
+        return new RenderQueue();
+    }
+    
+    push(renderable: Renderable) {
+    }
+
+    pop(): Renderable {
+    }
+}
+
+interface Renderable {
+    draw(context: CanvasRenderingContext2D): void;
+}
+
 class Renderer {
-    context: CanvasRenderingContext2D;
-    boundingBox: Rectangle;
+    private context: CanvasRenderingContext2D;
+    private boundingBox: Rectangle;
+    private renderQueue: RenderQueue;
 
     constructor(context: CanvasRenderingContext2D, boundingBox: Rectangle) {
         this.context = context;
         this.boundingBox = boundingBox;
+        this.renderQueue = RenderQueue.new();
     }
 
     static fromCanvas(canvas: HTMLCanvasElement) {
@@ -127,36 +145,6 @@ class Rectangle {
     }
 }
 
-enum RoadType {
-    TWO_WAY,
-    ONE_WAY
-}
-
-class Road {
-    private type_: RoadType;
-    private lanes_: Lane[];
-
-    constructor(type: RoadType, lanes: Lane[]) {
-        this.type_ = type;
-        this.lanes_ = lanes;
-    }
-
-    static createOneWay(lanes: Lane[]) {
-        return new Road(RoadType.ONE_WAY, lanes);
-    }
-
-    type() {
-        return this.type;
-    }
-
-    lanes() {
-        return this.lanes;
-    }
-}
-
-class Lane {
-}
-
 function loop(logger: ConsoleLogger, time: SimulationTime, renderer: Renderer) {
     logger.info(time.format());
 
@@ -173,10 +161,6 @@ function update() {
 
 function render(renderer: Renderer) {
     drawRoad(renderer);
-}
-
-function drawRoad(renderer: Renderer) {
-    renderer.renderLine(Vector2D.new(0, 0), Vector2D.new(200, 200));
 }
 
 main();
